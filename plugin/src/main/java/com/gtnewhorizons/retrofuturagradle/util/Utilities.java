@@ -1,5 +1,6 @@
 package com.gtnewhorizons.retrofuturagradle.util;
 
+import io.github.pixee.security.ZipSecurity;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -224,7 +225,7 @@ public final class Utilities {
             throws IOException {
         try (final FileInputStream fis = new FileInputStream(jar);
                 final BufferedInputStream bis = new BufferedInputStream(fis);
-                final ZipInputStream zis = new ZipInputStream(bis)) {
+                final ZipInputStream zis = ZipSecurity.createHardenedInputStream(bis)) {
             ZipEntry entry = null;
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.getName().contains("META-INF")) {
