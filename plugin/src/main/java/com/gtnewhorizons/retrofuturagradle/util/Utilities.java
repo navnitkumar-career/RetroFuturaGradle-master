@@ -1,5 +1,8 @@
 package com.gtnewhorizons.retrofuturagradle.util;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
+import io.github.pixee.security.ZipSecurity;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -224,7 +227,7 @@ public final class Utilities {
             throws IOException {
         try (final FileInputStream fis = new FileInputStream(jar);
                 final BufferedInputStream bis = new BufferedInputStream(fis);
-                final ZipInputStream zis = new ZipInputStream(bis)) {
+                final ZipInputStream zis = ZipSecurity.createHardenedInputStream(bis)) {
             ZipEntry entry = null;
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.getName().contains("META-INF")) {
@@ -538,8 +541,7 @@ public final class Utilities {
         UUID onlineUUID = null;
         if (!isOffline) {
             try {
-                URL url = new URL(
-                        Constants.URL_PLAYER_TO_UUID + URLEncoder.encode(username, StandardCharsets.UTF_8.name()));
+                URL url = Urls.create(Constants.URL_PLAYER_TO_UUID + URLEncoder.encode(username, StandardCharsets.UTF_8.name()), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
                 final String json = IOUtils.toString(url, StandardCharsets.UTF_8);
                 JsonElement root = JsonParser.parseString(json);
                 if (root.isJsonObject()) {

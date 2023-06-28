@@ -1,5 +1,7 @@
 package com.gtnewhorizons.retrofuturagradle.minecraft;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -73,7 +75,7 @@ public abstract class DownloadAssetsTask extends DefaultTask {
         for (AssetManifest.Asset asset : assets) {
             queue.submit(AssetAction.class, action -> {
                 try {
-                    action.getSourceUrl().set(new URL(Constants.URL_ASSETS_ROOT + asset.path));
+                    action.getSourceUrl().set(Urls.create(Constants.URL_ASSETS_ROOT + asset.path, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
                 } catch (MalformedURLException e) {
                     throw new RuntimeException(e);
                 }

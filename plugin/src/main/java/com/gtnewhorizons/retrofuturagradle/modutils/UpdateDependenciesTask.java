@@ -1,5 +1,7 @@
 package com.gtnewhorizons.retrofuturagradle.modutils;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -100,7 +102,7 @@ public class UpdateDependenciesTask extends DefaultTask {
                 "http://jenkins.usrv.eu:8081/nexus/content/groups/public/com/github/GTNewHorizons/%s/maven-metadata.xml",
                 modName);
         try {
-            url = new URL(urlString);
+            url = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } catch (MalformedURLException e) {
             getLogger().error("Error generating URL: {}", urlString, e);
             return null;

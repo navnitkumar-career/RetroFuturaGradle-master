@@ -1,5 +1,7 @@
 package com.gtnewhorizons.retrofuturagradle;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -25,7 +27,7 @@ public class TokenReplacement {
     public void loadConfig(String inputUrl) {
         final URL url;
         try {
-            url = new URL(inputUrl);
+            url = Urls.create(inputUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Malformed URL for RFG token replacement", e);
         }

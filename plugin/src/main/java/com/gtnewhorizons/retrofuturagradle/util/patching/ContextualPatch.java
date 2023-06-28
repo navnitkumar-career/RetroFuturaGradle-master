@@ -20,6 +20,7 @@
  */
 package com.gtnewhorizons.retrofuturagradle.util.patching;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -125,7 +126,7 @@ public final class ContextualPatch {
         List<PatchReport> report = new ArrayList<PatchReport>();
         init();
         try {
-            patchLine = patchReader.readLine();
+            patchLine = BoundedLineReader.readLine(patchReader, 1000000);
             List<SinglePatch> patches = new ArrayList<SinglePatch>();
             for (;;) {
                 SinglePatch patch = getNextPatch();
@@ -170,10 +171,10 @@ public final class ContextualPatch {
 
         patchReader = new BufferedReader(new FileReader(patchFile));
         String encoding = "ISO-8859-1";
-        String line = patchReader.readLine();
+        String line = BoundedLineReader.readLine(patchReader, 1000000);
         if (MAGIC.equals(line)) {
             encoding = "utf8"; // NOI18N
-            line = patchReader.readLine();
+            line = BoundedLineReader.readLine(patchReader, 1000000);
         }
         patchReader.close();
 
@@ -443,7 +444,7 @@ public final class ContextualPatch {
         try {
             List<String> lines = new ArrayList<String>();
             String line;
-            while ((line = r.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(r, 1000000)) != null) {
                 lines.add(line);
             }
             return lines;
@@ -806,7 +807,7 @@ public final class ContextualPatch {
 
     private String readPatchLine() throws IOException {
         if (patchLineRead) {
-            patchLine = patchReader.readLine();
+            patchLine = BoundedLineReader.readLine(patchReader, 1000000);
         } else {
             patchLineRead = true;
         }
